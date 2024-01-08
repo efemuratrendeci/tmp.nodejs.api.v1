@@ -9,6 +9,12 @@ export default class BaseController extends BaseClass {
         }
     }
 
+    initMetadata = (mapper, prefix) => {
+        for (const method of mapper) {
+            Reflect.defineMetadata(`${this.constructor.name}_route`, `${JSON.stringify({ controller: this.constructor.name, prefix: prefix, ...method })}`, BaseController);
+        }
+    }
+
     response({ content, headers, message, status, error } = { status: 200 }) {
         if (!this.res) throw new Error('BaseClass error : res parameter needed'); //todo
 
