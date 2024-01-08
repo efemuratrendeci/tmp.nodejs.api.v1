@@ -35,7 +35,7 @@ export default new class AplicationBuilder extends BaseClass {
 
     configureErrorRoutes = () => {
         this.api.use('/', this._notFoundControllerInit);
-        this.api.use(this._errorControllerInit);
+        this.api.use(this._customErrorControllerInit, this._serverErrorControllerInit);
     }
 
     configureRoutes = () => {
@@ -51,13 +51,15 @@ export default new class AplicationBuilder extends BaseClass {
     }
 
     addRoute = (controller, mapper) => {
-        this.api.use(`/${process.env.BASE_ROUTE}`, this.router[this.getRouteMethod(mapper.function)](`/${mapper.prefix}/${mapper.path}`, async (req, res, next) => {
-            try {
-                return await new (eval(controller.constructor.name))(res)[mapper.function](req, res, next);
-            } catch (error) {
-                next(error);
-            }
-        }));
+        for (const map of mapper) {
+            this.api.use(`/${process.env.BASE_ROUTE}`, this.router[this.getRouteMethod(map.function)](`/${map.prefix}/${map.path}`, async (req, res, next) => {
+                try {
+                    return await new (eval(controller.constructor.name))(res)[map.function](req, res, next);
+                } catch (error) {
+                    next(error);
+                }
+            }));
+        }
     }
 
     getRouteMethod = (name) => {
@@ -73,8 +75,13 @@ export default new class AplicationBuilder extends BaseClass {
         return controller.getNotFound(req, next);
     }
 
-    _errorControllerInit = async (error, req, res, next) => {
+    _serverErrorControllerInit = async (error, req, res, next) => {
         const controller = new ErrorController(res);
         return controller.getSystemError(error);
+    }
+
+    _customErrorControllerInit = async (error, req, res, next) => {
+        const controller = new ErrorController(res);
+        return controller.getCustomError(error, req, res, next);
     }
 }
