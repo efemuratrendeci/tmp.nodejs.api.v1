@@ -18,7 +18,7 @@ class ErrorController extends BaseController {
 
     getCustomError = async (error, req, res, next) => {
         if (ApiError.isApiError(error)) {
-            return this.response({ status: error.status, exception: error });
+            return this.response({ status: error.status, info: "No detailed info", exception: error });
         } else {
             return next(error);
         }

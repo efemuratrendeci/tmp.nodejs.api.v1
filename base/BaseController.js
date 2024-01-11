@@ -21,7 +21,7 @@ export default class BaseController extends BaseClass {
         }
     }
 
-    response({ content, headers, message, status, exception } = { status: 200 }) {
+    response({ content, headers, info, status, exception } = { status: 200 }) {
         if (!this.res) throw new Error('BaseClass error : res parameter needed'); //todo
 
         if (headers instanceof Map) {
@@ -32,14 +32,15 @@ export default class BaseController extends BaseClass {
 
         const baseResponse = {
             status,
-            isSuccess: status < 300
+            isSuccess: status < 300,
+            info: info
         }
 
         return this.res.status(status).type('json').send(
             JSON.stringify(!exception ?
                 {
                     ...baseResponse,
-                    content: content ?? {}
+                    content: content
                 } :
                 {
                     ...baseResponse,
@@ -49,17 +50,17 @@ export default class BaseController extends BaseClass {
     }
 
     _methodMap = [
-        { name: 'ok', status: HttpStatusCodes.SUCCESS, message: 'Request succesfully returned' },
-        { name: 'success', status: HttpStatusCodes.CREATED, message: 'Entity created' },
-        { name: 'accepted', status: HttpStatusCodes.ACCEPTED, message: 'Request accepted' },
-        { name: 'noEntity', status: HttpStatusCodes.NO_ENTITY, message: 'Request was success but returned with no entity' },
-        { name: 'badRequest', status: HttpStatusCodes.BAD_REQUEST, message: 'Bad request. Please check your request' },
-        { name: 'notAllowed', status: HttpStatusCodes.NOT_AUTHENTICATED, message: 'You are not authenticated' },
-        { name: 'notAuthorized', status: HttpStatusCodes.UNAUTHORIZED, message: 'You are unauthorized' },
-        { name: 'notFound', status: HttpStatusCodes.NOT_FOUND, message: 'Requested url not found' },
-        { name: 'conflict', status: HttpStatusCodes.CONFLICT, message: 'There was a conflict via identifiers in your request' },
-        { name: 'unprocessableEntity', status: HttpStatusCodes.UNPROCESSABLE_ENTITY, message: 'This entity is unprocessable' },
-        { name: 'error', status: HttpStatusCodes.SERVER_ERROR, message: 'An error occured' },
-        { name: 'badGateway', status: HttpStatusCodes.BAD_GATEWAY, message: 'There was an upstream error' }
+        { name: 'ok', status: HttpStatusCodes.SUCCESS, info: 'Request succesfully returned' },
+        { name: 'success', status: HttpStatusCodes.CREATED, info: 'Entity created' },
+        { name: 'accepted', status: HttpStatusCodes.ACCEPTED, info: 'Request accepted' },
+        { name: 'noEntity', status: HttpStatusCodes.NO_ENTITY, info: 'Request was success but returned with no entity' },
+        { name: 'badRequest', status: HttpStatusCodes.BAD_REQUEST, info: 'Bad request. Please check your request' },
+        { name: 'notAllowed', status: HttpStatusCodes.NOT_AUTHENTICATED, info: 'You are not authenticated' },
+        { name: 'notAuthorized', status: HttpStatusCodes.UNAUTHORIZED, info: 'You are unauthorized' },
+        { name: 'notFound', status: HttpStatusCodes.NOT_FOUND, info: 'Requested url not found' },
+        { name: 'conflict', status: HttpStatusCodes.CONFLICT, info: 'There was a conflict via identifiers in your request' },
+        { name: 'unprocessableEntity', status: HttpStatusCodes.UNPROCESSABLE_ENTITY, info: 'This entity is unprocessable' },
+        { name: 'error', status: HttpStatusCodes.SERVER_ERROR, info: 'An error occured' },
+        { name: 'badGateway', status: HttpStatusCodes.BAD_GATEWAY, info: 'There was an upstream error' }
     ]
 }

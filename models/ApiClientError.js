@@ -5,6 +5,6 @@ export default class ApiClientError extends ApiError {
     constructor({ message, statusCode = HttpStatusCodes.BAD_REQUEST }) {
         super(message, statusCode);
 
-        this.controller = this.getGroup(new Error().stack);
+        if (process.env.ENV === 'DEV') this.controller = this.getGroup(new Error().stack);
     }
 }
