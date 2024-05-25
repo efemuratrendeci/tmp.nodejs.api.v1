@@ -4,15 +4,10 @@ export default class WatherforecastController extends BaseController {
 
     constructor(res) {
         super(res);
-        this.initMetadata(this.methodMapper, 'weather');
+        this.initMetadata();
     }
 
-    methodMapper = [
-        { function: 'getWeatherByCity', path: 'city/:cityId' },
-        { function: 'getSmthng', path: 'smthng' }
-    ]
-
-    getWeatherByCity = async (req) => {
+    getCity_$cityId = async (req) => {
         throw new Error('Handles 500!!');
         return this.ok({ content: { cityId: req.params[cityId], weather: '25F' } });
     }

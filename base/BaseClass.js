@@ -13,6 +13,15 @@ export default class BaseClass {
         return id.slice(0, -1);
     }
 
+    extractRouteMethod = (name) => {
+        if (name.substring(0, 3) === 'get') return 'get';
+        if (name.substring(0, 3) === 'put') return 'put';
+        if (name.substring(0, 4) === 'post') return 'post';
+        if (name.substring(0, 5) === 'patch') return 'patch';
+        if (name.substring(0, 6) === 'delete') return 'delete';
+        return '';
+    }
+
     /**
      * throws server or client error with status code
      * @param  {...any} args

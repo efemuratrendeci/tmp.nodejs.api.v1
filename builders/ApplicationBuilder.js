@@ -52,7 +52,7 @@ export default new class AplicationBuilder extends BaseClass {
 
     addRoute = (controller, mapper) => {
         for (const map of mapper) {
-            this.api.use(`/${process.env.BASE_ROUTE}`, this.router[this.getRouteMethod(map.function)](`/${map.prefix}/${map.path}`, async (req, res, next) => {
+            this.api.use(`/${process.env.BASE_ROUTE}`, this.router[this.extractRouteMethod(map.function)](`/${map.prefix}/${map.path}`, async (req, res, next) => {
                 try {
                     return await new (eval(controller.constructor.name))(res)[map.function](req, res, next);
                 } catch (error) {
@@ -60,14 +60,6 @@ export default new class AplicationBuilder extends BaseClass {
                 }
             }));
         }
-    }
-
-    getRouteMethod = (name) => {
-        if (name.substring(0, 3) === 'get') return 'get';
-        if (name.substring(0, 3) === 'put') return 'put';
-        if (name.substring(0, 4) === 'post') return 'post';
-        if (name.substring(0, 5) === 'patch') return 'patch';
-        return 'delete';
     }
 
     _notFoundControllerInit = async (req, res, next) => {

@@ -10,14 +10,20 @@ export default class BaseController extends BaseClass {
         }
     }
 
-    initMetadata = (mapper, prefix) => {
+    initMetadata = () => {
         let existanceMetadata = [];
+        const prefix = this.toCamelCase(this.constructor.name.replace('Controller', ''));
+        for (const key in this) {
+            const method = this.extractRouteMethod(key);
 
-        for (const method of mapper) {
-            if (Reflect.hasOwnMetadata(`${this.constructor.name}_route`, BaseController)) {
-                existanceMetadata = JSON.parse(Reflect.getMetadata(`${this.constructor.name}_route`, BaseController));
+            if (method) {
+                console.log(this.toRoute(key))
+                if (Reflect.hasOwnMetadata(`${this.constructor.name}_route`, BaseController)) {
+                    existanceMetadata = JSON.parse(Reflect.getMetadata(`${this.constructor.name}_route`, BaseController));
+                }
+
+                Reflect.defineMetadata(`${this.constructor.name}_route`, `${JSON.stringify([...existanceMetadata, { controller: this.constructor.name, prefix: prefix, ...{ function: key, method: method, path: this.toRoute(key.replace(method, '')) } }])}`, BaseController);
             }
-            Reflect.defineMetadata(`${this.constructor.name}_route`, `${JSON.stringify([...existanceMetadata, { controller: this.constructor.name, prefix: prefix, ...method }])}`, BaseController);
         }
     }
 
@@ -48,6 +54,23 @@ export default class BaseController extends BaseClass {
                 }
                 , null, 4) + '\n');
     }
+
+    toRoute = (str) => {
+        str = this.toCamelCase(str);
+        str = str.replace(/_/g, '/');
+        let stringArray = str.split('$');
+        stringArray = stringArray.map(x => this.toCamelCase(x));
+        str = stringArray.join(':');
+        return str;
+    }
+
+
+    toCamelCase(str) {
+        return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+            return index == 0 ? word.toLowerCase() : word.toUpperCase();
+        }).replace(/\s+/g, '');
+    }
+
 
     _methodMap = [
         { name: 'ok', status: HttpStatusCodes.SUCCESS, info: 'Request succesfully returned' },
