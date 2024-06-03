@@ -31,9 +31,9 @@ export default new class AplicationBuilder extends BaseClass {
         this.configureRoutes();
         this.configureErrorRoutes();
 
-        //TODO: Log application is running here
         this.api.use(`/${process.env.BASE_ROUTE}`, this.router);
         this.api.listen(process.env.PORT);
+        LogHelper.info(`${process.env.ENV ?? "PROD"} server started on port ${process.env.PORT}`);
     }
 
     configureOptions = () => {
