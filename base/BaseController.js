@@ -17,7 +17,6 @@ export default class BaseController extends BaseClass {
             const method = this.extractRouteMethod(key);
 
             if (method) {
-                console.log(this.toRoute(key))
                 if (Reflect.hasOwnMetadata(`${this.constructor.name}_route`, BaseController)) {
                     existanceMetadata = JSON.parse(Reflect.getMetadata(`${this.constructor.name}_route`, BaseController));
                 }
@@ -57,10 +56,10 @@ export default class BaseController extends BaseClass {
 
     toRoute = (str) => {
         str = this.toCamelCase(str);
-        str = str.replace(/_/g, '/');
         let stringArray = str.split('$');
         stringArray = stringArray.map(x => this.toCamelCase(x));
         str = stringArray.join(':');
+        str = str.replace(/_/g, '/');
         return str;
     }
 
