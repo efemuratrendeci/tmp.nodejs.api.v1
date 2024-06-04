@@ -1,7 +1,7 @@
 # Node JS Template Repo
 
 This repo includes express with dynamic rooting mechanism. You can just create a controller add it to ApplicationBuilder and you are good to go!.
-Applicaiton will create routes it self by getting route names from your methods. Let em explain :
+Applicaiton will create routes it self by getting route names from your methods. Let me explain :
 
 ```js
 class TrafficController extends BaseController {
